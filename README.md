@@ -1,37 +1,18 @@
-## Welcome to GitHub Pages
+## Welcome to LiveSharp
 
-You can use the [editor on GitHub](https://github.com/OYIon/LiveSharp/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+LiveSharp is a .NET tool that lets you develop your code without recompilation. 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+1. Run your application
+2. Change the code
+3. Instantly see the result!
 
-### Markdown
+### How it works
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+During the build LiveSharp injects code in the beginning of the method. When this method is executed it first checks if there is an updated version exists. You can choose which methods LiveSharp injects by modifying the `livesharp.rules` file that is created after the initial build. The exact format is described further in this document.
 
-```markdown
-Syntax highlighted code block
+### Installation
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/OYIon/LiveSharp/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+1. [Install Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=ionoy.LiveSharp)
+2. In Package Manager Console choose the project that you want runtime update to work on and install [LiveSharp NuGet package](https://www.nuget.org/packages/livesharp)
+3. Build. You should see L# icon near the methods that allow runtime editing.
+4. Run the application, change code, save file.
