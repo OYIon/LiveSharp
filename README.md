@@ -21,7 +21,7 @@ During the build LiveSharp injects code in the beginning of the method. When thi
 
 `Warning: LiveSharp couldn't find start method.`
 
-LiveSharp needs a starting point to initialize itself. For example, with Xamarin Forms it should be you App type constructor. But since you can have a different application structure, LiveSharp might not be able to resolve it automatically. 
+LiveSharp needs a starting point to initialize itself. For example, with Xamarin Forms it should be your App type constructor. But since you can have a different application structure, LiveSharp might not be able to resolve it automatically. 
 
 To solve it, open `livesharp.rules` file in the project root folder and add a line like this: `@MyApp.App .ctor`
 Where `MyApp.App` is a full name of your Application type and `.ctor` is either a method name or a constructor identifier.
