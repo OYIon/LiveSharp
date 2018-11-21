@@ -19,8 +19,7 @@ During the build LiveSharp injects code in the beginning of the method. When thi
 
 ### 'livesharp.rules' file
 
-This file contains all the information LiveSharp uses to work with your application. 
-By default it contains only one line:
+This file is located in your project root directory. By default it contains only one line:
 ```
 *
 ```
