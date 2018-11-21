@@ -17,11 +17,43 @@ During the build LiveSharp injects code in the beginning of the method. When thi
 3. Build. You should see L# icon near the methods that allow runtime editing.
 4. Run the application, change code, save file.
 
+### 'livesharp.rules' file
+
+This file contains all the information LiveSharp uses to work with your application. 
+By default it contains only one line:
+```
+*
+```
+This means that all of the methods in current project are to be injected (enabled for LiveSharp). In some cases you might want to include only certain types. For example, when doing Xamarin Forms UI development, you may only include types deriving from ContentPage:
+```
+Xamarin.Forms.ContentPage
+```
+You can also include singular methods:
+```
+MyNamespace.MyType MethodName
+```
+If method has any overloads, you can choose one by providing parameter types:
+```
+MyNamespace.MyType MethodName System.Collections.Generic.Dictionary
+```
+You can use wildcards:
+```
+Xamarin.Forms.Content* Build*
+```
+This will match all methods starting with `Build` that are defined in types derived from types in `Xamarin.Forms` namespace starting with `Content`. Like `ContentPage` or `ContentView`.
+
+#### Start rule
+
+LiveSharp needs a starting point to initialize itself. For example, with Xamarin Forms it should be your App type constructor. But since you can have a different application structure, LiveSharp might not be able to resolve it automatically. 
+
+To manually assign the initialization method you can use the following syntax:
+```
+@MyNamespace.App StartTheApplication
+```
+
 ### Troubleshooting
 
 `Warning: LiveSharp couldn't find start method.`
 
-LiveSharp needs a starting point to initialize itself. For example, with Xamarin Forms it should be your App type constructor. But since you can have a different application structure, LiveSharp might not be able to resolve it automatically. 
-
-To solve it, open `livesharp.rules` file in the project root folder and add a line like this: `@MyApp.App .ctor`
+Open `livesharp.rules` file in the project root folder and add a line like this: `@MyApp.App .ctor`
 Where `MyApp.App` is a full name of your Application type and `.ctor` is either a method name or a constructor identifier.
