@@ -24,7 +24,7 @@ By default it contains only one line:
 ```
 *
 ```
-This means that all of the methods in current project are to be injected (enabled for LiveSharp). In some cases you might want to include only certain types. For example, when doing Xamarin Forms UI development, you may only include types deriving from ContentPage:
+This means that all of the methods in current project are to be injected (enabled for LiveSharp). In some cases you might want to include only certain types. For example, when doing Xamarin Forms UI development these could be types deriving from ContentPage:
 ```
 Xamarin.Forms.ContentPage
 ```
