@@ -31,6 +31,10 @@ You can also include singular methods:
 ```
 MyNamespace.MyType MethodName
 ```
+Or constructors:
+```
+MyNamespace.MyType .ctor
+```
 If method has any overloads, you can choose one by providing parameter types:
 ```
 MyNamespace.MyType MethodName System.Collections.Generic.Dictionary
