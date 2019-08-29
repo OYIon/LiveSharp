@@ -12,9 +12,9 @@ During the build LiveSharp injects code in the beginning of the method. When thi
 
 ### Installation
 
-1. [Install Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=ionoy.LiveSharp)
+1. [Install and launch latest release of LiveSharp Server](https://github.com/OYIon/LiveSharp/releases)
 2. In Package Manager Console choose the project that you want runtime update to work on and install [LiveSharp NuGet package](https://www.nuget.org/packages/livesharp)
-3. Build. You should see L# icon near the methods that allow runtime editing.
+3. Build
 4. Run the application, change code, save file.
 
 ### 'livesharp.rules' file
