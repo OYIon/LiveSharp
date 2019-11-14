@@ -1,5 +1,7 @@
 ## Welcome to LiveSharp
 
+Please visit www.livesharp.net for more information.
+
 LiveSharp is a .NET tool that lets you develop your code without recompilation. 
 
 1. Run your application
