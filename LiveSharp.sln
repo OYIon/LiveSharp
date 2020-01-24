@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveSharp.Support.XamarinForms", "LiveSharp.Support.XamarinForms\LiveSharp.Support.XamarinForms.csproj", "{E6AE9C86-09FF-4015-8675-59C0D25722DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveSharp.Support.XamarinForms", "src\LiveSharp.Support.XamarinForms\LiveSharp.Support.XamarinForms.csproj", "{E6AE9C86-09FF-4015-8675-59C0D25722DA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveSharp.Interfaces", "LiveSharp.Interfaces\LiveSharp.Interfaces.csproj", "{17DAAAE0-0C95-4EBB-A2DD-9AE223886FB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveSharp.Interfaces", "src\LiveSharp.Interfaces\LiveSharp.Interfaces.csproj", "{17DAAAE0-0C95-4EBB-A2DD-9AE223886FB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
