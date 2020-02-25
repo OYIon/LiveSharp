@@ -4,6 +4,6 @@ namespace LiveSharp.Interfaces
 {
     public interface ILiveSharpConfig
     {
-        bool TryGetValue(string xpath, out string value);
+        bool TryGetValue(string key, out string value);
     }
 }
