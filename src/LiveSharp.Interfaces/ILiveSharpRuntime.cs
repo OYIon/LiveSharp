@@ -7,7 +7,7 @@ namespace LiveSharp
     {
         ILiveSharpConfig Config { get; }
         ILogger Logger { get; }
-        object GetUpdate(object oldContext, string ctor, Type[] argsConstructorParameterTypes, object[] args);
-        void ExecuteVoid(object update, object oldContext, object[] argsConstructorArguments);
+        object GetUpdate(object instance, string methodName, Type[] parameterTypes, object[] args);
+        void ExecuteVoid(object methodBody, object instance, object[] args);
     }
 }

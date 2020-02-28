@@ -11,15 +11,22 @@ namespace LiveSharp
     {
         private readonly WeakReference<object> _latestContentPage = new WeakReference<object>(null);
         private ILiveSharpRuntime _runtime;
-
+        private string _pageHotReloadMethodName;
+        private bool _missingHotReloadMethodReported = false;
+        
         public void Initialize(ILiveSharpRuntime runtime)
         {
             _runtime = runtime;
+            
+            if (runtime.Config.TryGetValue("pageHotReloadMethod", out var methodName))
+                _pageHotReloadMethodName = methodName;
+            else
+                _pageHotReloadMethodName = "Build";
         }
         
         public void HandleCall(object instance, string methodIdentifier, object[] args, Type[] argTypes)
         {
-            if (instance is ContentPage && methodIdentifier.EndsWith(" Build "))
+            if (instance is ContentPage && methodIdentifier.EndsWith(" " + _pageHotReloadMethodName + " "))
                 _latestContentPage.SetTarget(instance);
         }
         
@@ -32,18 +39,15 @@ namespace LiveSharp
 
             Device.BeginInvokeOnMainThread(() => {
                 var found = false;
-                var updatedContexts = new HashSet<Type>();
 
                 try {
-                    foreach (var instance in instances) {
-                        if (CallBuildMethod(instance))
+                    foreach (var instance in instances)
+                        if (CallHotReloadMethod(instance))
                             found = true;
-                    }
-                    
-                    if (!found) {
+
+                    if (!found)
                         if (_latestContentPage.TryGetTarget(out var contentPage))
-                            CallBuildMethod(contentPage);
-                    }
+                            CallHotReloadMethod(contentPage);
                 } catch (TargetInvocationException e) {
                     var inner = e.InnerException;
                         
@@ -55,16 +59,41 @@ namespace LiveSharp
             });
         }
 
-        private static bool CallBuildMethod(object instance)
+        private bool CallHotReloadMethod(object instance)
         {
-            var buildMethod = instance.GetMethod("Build", true);
+            if (TryCallingRuntimeMethod(instance))
+                return true;
 
-            if (buildMethod == null) 
+            var hotReloadMethod = instance.GetMethod(_pageHotReloadMethodName, true);
+            if (hotReloadMethod == null) {
+                ReportMissingHotReloadMethod();
                 return false;
+            }
             
-            buildMethod.Invoke(instance, null);
+            hotReloadMethod.Invoke(instance, null);
             
             return true;
+        }
+
+        private bool TryCallingRuntimeMethod(object instance)
+        {
+            var args = new object[0];
+            var runtimeCode = _runtime.GetUpdate(instance, _pageHotReloadMethodName, new Type[0], args);
+            
+            if (runtimeCode != null) {
+                _runtime.ExecuteVoid(runtimeCode, instance, args);
+                return true;
+            }
+            
+            return false;
+        }
+
+        private void ReportMissingHotReloadMethod()
+        {
+            if (!_missingHotReloadMethodReported) {
+                _runtime.Logger.LogWarning("Unable to find " + _pageHotReloadMethodName + " method to perform hot-reload");
+                _missingHotReloadMethodReported = true;
+            }
         }
     }
 }
