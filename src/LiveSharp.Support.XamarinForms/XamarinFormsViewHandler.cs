@@ -42,7 +42,7 @@ namespace LiveSharp
 
                 try {
                     foreach (var instance in instances)
-                        if (CallHotReloadMethod(instance))
+                        if (instance is ContentPage && CallHotReloadMethod(instance))
                             found = true;
 
                     if (!found)
