@@ -28,6 +28,9 @@ namespace LiveSharp
         {
             if (instance is ContentPage && methodIdentifier.EndsWith(" " + _pageHotReloadMethodName + " "))
                 _latestContentPage.SetTarget(instance);
+            
+            if (instance is ContentPage contentPage)
+                _runtime.Inspector?.SetCurrentContext(contentPage);
         }
         
         public void HandleUpdate(Dictionary<string, IReadOnlyList<object>> updatedMethods)
@@ -66,7 +69,7 @@ namespace LiveSharp
 
             var hotReloadMethod = instance.GetMethod(_pageHotReloadMethodName, true);
             if (hotReloadMethod == null) {
-                ReportMissingHotReloadMethod();
+                ReportMissingHotReloadMethod(instance);
                 return false;
             }
             
@@ -88,10 +91,10 @@ namespace LiveSharp
             return false;
         }
 
-        private void ReportMissingHotReloadMethod()
+        private void ReportMissingHotReloadMethod(object instance)
         {
             if (!_missingHotReloadMethodReported) {
-                _runtime.Logger.LogWarning("Unable to find " + _pageHotReloadMethodName + " method to perform hot-reload");
+                _runtime.Logger.LogWarning("Unable to find `" + _pageHotReloadMethodName + "` method on `" + instance?.GetType().FullName + "` to perform hot-reload");
                 _missingHotReloadMethodReported = true;
             }
         }

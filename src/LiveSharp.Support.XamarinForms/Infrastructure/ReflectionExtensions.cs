@@ -72,6 +72,45 @@ namespace LiveSharp.Support.XamarinForms
                     break;
             }
         }
+        
+        public static bool Is(this object instance, string typeName)
+        {
+            var type = instance.GetType();
+            
+            return type.Is(typeName);
+        }
+        
+        public static bool Is(this Type type, string typeName)
+        {
+            while (type != null) {
+                if (type.FullName == typeName)
+                    return true;
+                
+                if (type.GetInterfaces().Any(i => i.FullName == typeName))
+                    return true;
+                
+                type = type.BaseType;
+            }
+            
+            return false;
+        }
+        
+        public static object GetPropertyValue(this object instance, string propertyName)
+        {
+            var type = instance.GetType();
+            return instance.GetPropertyValue(type, propertyName);
+        }
+        
+        public static object GetPropertyValue(this object instance, Type type, string propertyName)
+        {
+            var property = type.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+            
+            if (property == null)
+                throw new Exception($"Property {propertyName} not found on type {type.FullName}");
+            
+            return property.GetValue(instance);
+        }
+        
         private static bool HasMatchingParameterTypes(this MethodInfo methodInfo, TypeInfo[] parameterTypes)
         {
             if (parameterTypes == null)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace LiveSharp
         private ILiveSharpRuntime _runtime;
         private int _uniqueId;
         private string[] _ignoredViewModels = new string[0];
-
+        
         public void Initialize(ILiveSharpRuntime runtime)
         {
             _runtime = runtime;
@@ -71,7 +72,7 @@ namespace LiveSharp
         
         private void UpdateViewModels(HashSet<Type> updatedContexts)
         {
-            var children = GetLogicalDescendants(Application.Current);
+            var children = GetLogicalDescendants(Application.Current).ToArray().Distinct();
             // Sometimes same instance of ViewModel can be attached to different BindingContext
             // We need to reuse the newly created instance in these cases
             // Dictionary is then: oldInstance -> newInstance
@@ -128,11 +129,40 @@ namespace LiveSharp
 
         private static IEnumerable<Element> GetLogicalDescendants(Element parent)
         {
+            if (parent == null)
+                yield break;
+            
             var ec = (IElementController)parent;
+            
             foreach (var child in ec.LogicalChildren) {
                 yield return child;
                 foreach (var grandChild in GetLogicalDescendants(child))
                     yield return grandChild;
+            }
+            
+            if (ec.LogicalChildren.Count != 0)
+                yield break;
+            
+            var parentType = parent.GetType();
+            
+            if (parentType.Is("Xamarin.Forms.IShellContentController")) {
+                yield return (Element)parent.GetPropertyValue("Xamarin.Forms.IShellContentController.Page");
+            } else if (parentType.Is("Xamarin.Forms.ShellItem")) {
+                var items = (IEnumerable) parent.GetPropertyValue("Items");
+                foreach (var item in items.OfType<Element>()) {
+                    yield return item;
+                    foreach (var itemChild in GetLogicalDescendants(item)) {
+                        yield return itemChild;
+                    }
+                }
+            } else if (parentType.Is("Xamarin.Forms.ShellSection")) {
+                var items = (IEnumerable) parent.GetPropertyValue("Items");
+                foreach (var item in items.OfType<Element>()) {
+                    yield return item;
+                    foreach (var itemChild in GetLogicalDescendants(item)) {
+                        yield return itemChild;
+                    }
+                }
             }
         }
     }

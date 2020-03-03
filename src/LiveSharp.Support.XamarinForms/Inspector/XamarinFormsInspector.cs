@@ -12,58 +12,15 @@ namespace LiveSharp.Support.XamarinForms
     {
         public event EventHandler<string> SerializedInstanceUpdate;
 
-        private ActionDisposable _currentPageSubscription;
-
         private INotifyPropertyChanged _currentBindingContext;
         private ActionDisposable _currentBindingContextDisposable;
-
-        private readonly List<ActionDisposable> _mainPageDisposables = new List<ActionDisposable>();
+        private ActionDisposable _currentPageSubscription;
 
         public void StartInspector()
         {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                Application.Current.PropertyChanged += (s, e) =>
-                {
-                    if (e.PropertyName == "MainPage")
-                        OnAppMainPageChanged(Application.Current.MainPage);
-                };
-
-                OnAppMainPageChanged(Application.Current.MainPage);
-            });            
+           
         }
-
-        private void OnAppMainPageChanged(Page mainPage)
-        {
-            foreach (var disposable in _mainPageDisposables)            
-                disposable.Dispose();
-
-            _mainPageDisposables.Clear();
-            
-            if (mainPage is NavigationPage navigation)
-            {
-                navigation.Pushed += navigationHandler;
-                navigation.Popped += navigationHandler;
-
-                _mainPageDisposables.Add(new ActionDisposable(() => navigation.Pushed -= navigationHandler));
-                _mainPageDisposables.Add(new ActionDisposable(() => navigation.Popped -= navigationHandler));
-
-                OnAppMainPageChanged(navigation.CurrentPage);
-
-                void navigationHandler(object sender, NavigationEventArgs args) {
-                    OnAppMainPageChanged(navigation.CurrentPage);
-                }
-            }
-            else if (mainPage is MasterDetailPage masterDetail)
-            {   
-                OnAppMainPageChanged(masterDetail.Detail);
-            }
-            else
-            {
-                OnCurrentPageChanged(mainPage);
-            }
-        }
-
+        
         private void OnCurrentPageChanged(Page page)
         {
             _currentPageSubscription?.Dispose();
@@ -75,14 +32,30 @@ namespace LiveSharp.Support.XamarinForms
 
             _currentPageSubscription = new ActionDisposable(() => page.BindingContextChanged -= bindingContextChanged);
 
-            OnCurrentPageBindingContextChanged(page.BindingContext);
+            object bindingContext = null;
+            try {
+                bindingContext = page.BindingContext;
+            } catch {
+                // Page._properties might not be initialized yet, so BindingContext throws NRE 
+            }
 
+            if (bindingContext != null)
+                OnCurrentPageBindingContextChanged(bindingContext);
+            
             void bindingContextChanged(object sender, EventArgs e)
             {
                 OnCurrentPageBindingContextChanged(page.BindingContext);
             }
         }
-
+        
+        
+        public void SetCurrentContext(object context)
+        {
+            if (context is ContentPage contentPage) {
+                OnCurrentPageChanged(contentPage);
+            }
+        }
+        
         private void OnCurrentPageBindingContextChanged(object bindingContext)
         {
             if (bindingContext is INotifyPropertyChanged inpc)
@@ -93,12 +66,12 @@ namespace LiveSharp.Support.XamarinForms
 
                     var instanceInspector = new InstanceInspector(inpc);
 
-                    inpc.PropertyChanged += InpcPropertyChanged;
+                    inpc.PropertyChanged += inpcPropertyChanged;
 
                     _currentBindingContext = inpc;
-                    _currentBindingContextDisposable = new ActionDisposable(() => inpc.PropertyChanged -= InpcPropertyChanged);
+                    _currentBindingContextDisposable = new ActionDisposable(() => inpc.PropertyChanged -= inpcPropertyChanged);
 
-                    void InpcPropertyChanged(object sender, PropertyChangedEventArgs e)
+                    void inpcPropertyChanged(object sender, PropertyChangedEventArgs e)
                     {
                         var existingInspector = instanceInspector.Properties.FirstOrDefault(pi => pi.PropertyInfo.Name == e.PropertyName);                        
 

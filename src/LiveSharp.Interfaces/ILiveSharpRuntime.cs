@@ -1,5 +1,6 @@
 using System;
 using LiveSharp.Interfaces;
+using LiveSharp.Runtime;
 
 namespace LiveSharp
 {
@@ -7,6 +8,8 @@ namespace LiveSharp
     {
         ILiveSharpConfig Config { get; }
         ILogger Logger { get; }
+        ILiveSharpInspector Inspector { get; set; }
+        
         object GetUpdate(object instance, string methodName, Type[] parameterTypes, object[] args);
         void ExecuteVoid(object methodBody, object instance, object[] args);
     }
