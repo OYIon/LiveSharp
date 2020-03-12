@@ -10,7 +10,7 @@ using Xamarin.Forms;
 
 namespace LiveSharp
 {
-    public class XamarinFormsViewModelHandler : ILiveSharpUpdateHandler
+    public class XamarinFormsViewModelHandler : ILiveSharpUpdateHandler, IAfterPropertySetterHandler
     {
         private readonly ConditionalWeakTable<INotifyPropertyChanged, InstanceInfo> _inpcInfos = new ConditionalWeakTable<INotifyPropertyChanged, InstanceInfo>();
         private ILiveSharpRuntime _runtime;
@@ -20,6 +20,8 @@ namespace LiveSharp
         public void Initialize(ILiveSharpRuntime runtime)
         {
             _runtime = runtime;
+            _runtime.Subscribe<IAfterPropertySetterHandler>(this);
+            
             if (_runtime.Config.TryGetValue("ignoredViewModels", out var viewModels)) {
                 if (!string.IsNullOrWhiteSpace(viewModels)) {
                     _ignoredViewModels = viewModels.Split(',');
@@ -164,6 +166,11 @@ namespace LiveSharp
                     }
                 }
             }
+        }
+
+        public void AfterPropertySetter(object instance, Type instanceType, string propertyName, object newValue)
+        {
+            
         }
     }
 }
