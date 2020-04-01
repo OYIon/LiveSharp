@@ -82,7 +82,7 @@ namespace LiveSharp
             // we don't want to replace newly created VM with another same one
             var justConstructed = new HashSet<object>();
             
-            foreach (var child in children) {
+            foreach (var child in children.Where(c => c != null)) {
                 var oldContext = child.BindingContext;
                 if (oldContext != null) {
                     var contextType = oldContext.GetType();

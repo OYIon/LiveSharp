@@ -32,15 +32,18 @@ namespace LiveSharp.Support.XamarinForms
 
             _currentPageSubscription = new ActionDisposable(() => page.BindingContextChanged -= bindingContextChanged);
 
-            object bindingContext = null;
-            try {
-                bindingContext = page.BindingContext;
-            } catch {
-                // Page._properties might not be initialized yet, so BindingContext throws NRE 
-            }
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                object bindingContext = null;
+                try {
+                    bindingContext = page.BindingContext;
+                } catch {
+                    // Page._properties might not be initialized yet, so BindingContext throws NRE 
+                }
 
-            if (bindingContext != null)
-                OnCurrentPageBindingContextChanged(bindingContext);
+                if (bindingContext != null)
+                    OnCurrentPageBindingContextChanged(bindingContext);
+            });
             
             void bindingContextChanged(object sender, EventArgs e)
             {
