@@ -12,5 +12,7 @@ namespace LiveSharp
         
         object GetUpdate(object instance, string methodName, Type[] parameterTypes, object[] args);
         void ExecuteVoid(object methodBody, object instance, object[] args);
+
+        void SendBroadcast(string message, byte contentType, int groupId);
     }
 }
