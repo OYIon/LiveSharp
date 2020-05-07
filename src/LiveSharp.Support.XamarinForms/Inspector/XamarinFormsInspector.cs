@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Xamarin.Forms;
 
@@ -10,11 +11,13 @@ namespace LiveSharp.Support.XamarinForms
 {
     public class XamarinFormsInspector : ILiveSharpInspector
     {
+        private int _instanceIds;
         public event EventHandler<string> SerializedInstanceUpdate;
 
         private INotifyPropertyChanged _currentBindingContext;
         private ActionDisposable _currentBindingContextDisposable;
         private ActionDisposable _currentPageSubscription;
+        public ILiveSharpRuntime Runtime { get; set; }
 
         public void StartInspector()
         {
@@ -100,10 +103,12 @@ namespace LiveSharp.Support.XamarinForms
             }
         }
 
-        private void SendInstanceUpdate(string xml)
+        private void SendInstanceUpdate(string result)
         {
-            xml = $"<Inspector>{xml}</Inspector>";
-            SerializedInstanceUpdate?.Invoke(this, xml);
+            // We can't list all instances like with Blazor support which targets .netcoreapp 3.1 
+            var newId = _instanceIds++;
+            
+            Runtime.SendBroadcast("-1 " + newId + " " + result, 70, 6);
         }
     }
 }

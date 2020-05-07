@@ -28,9 +28,13 @@ namespace LiveSharp
         {
             if (instance is ContentPage && methodIdentifier.EndsWith(" " + _pageHotReloadMethodName + " "))
                 _latestContentPage.SetTarget(instance);
-            
-            if (instance is ContentPage contentPage)
-                _runtime.Inspector?.SetCurrentContext(contentPage);
+
+            if (instance is ContentPage contentPage) {
+                if (_runtime.Inspector is XamarinFormsInspector inspector) {
+                    inspector.Runtime = _runtime;
+                    inspector.SetCurrentContext(contentPage);
+                }
+            }
         }
         
         public void HandleUpdate(Dictionary<string, IReadOnlyList<object>> updatedMethods)

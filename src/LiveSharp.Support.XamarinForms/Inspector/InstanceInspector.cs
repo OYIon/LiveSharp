@@ -26,11 +26,10 @@ namespace LiveSharp.Support.XamarinForms
         {
             return 
 $@"
-<Instance TypeName=""{_type.FullName}"">
-    <Properties>
-        {string.Join("\n", Properties.Select(p => p.Serialize()))}
-    </Properties>
-</Instance>
+<div class='inspector-instance'>
+    <div class='instance-type'>{_type.FullName}</div>
+    {string.Join("\n", Properties.Select(p => p.Serialize()))}
+</div>
 ";
         }
 
