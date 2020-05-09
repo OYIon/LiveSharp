@@ -14,5 +14,6 @@ namespace LiveSharp
         void ExecuteVoid(object methodBody, object instance, object[] args);
 
         void SendBroadcast(string message, byte contentType, int groupId);
+        void LiveSharpMessageReceived(string message, byte contentType, int groupId);
     }
 }
