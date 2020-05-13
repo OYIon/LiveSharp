@@ -8,6 +8,7 @@ namespace LiveSharp.Support.XamarinForms
 {
     class InstanceInspector
     {
+        public string Key => _type.FullName;
         public List<PropertyInspector> Properties { get; } = new List<PropertyInspector>();
         public List<MethodInspector> Methods { get; } = new List<MethodInspector>();
 

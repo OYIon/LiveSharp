@@ -19,9 +19,15 @@ namespace LiveSharp.Support.XamarinForms
         private ActionDisposable _currentPageSubscription;
         public ILiveSharpRuntime Runtime { get; set; }
 
-        public void StartInspector()
+
+        public void Render()
         {
-           
+            var currentBindingContext = _currentBindingContext;
+            if (currentBindingContext != null) {
+                var inspector = new InstanceInspector(currentBindingContext);
+                var key = currentBindingContext.GetType().FullName;
+                SendInstanceUpdate(key, inspector.Serialize());
+            }
         }
         
         private void OnCurrentPageChanged(Page page)
@@ -95,20 +101,20 @@ namespace LiveSharp.Support.XamarinForms
                                 instanceInspector.Properties.Add(new PropertyInspector(property, inpc));
                         }
 
-                        SendInstanceUpdate(instanceInspector.Serialize());
+                        SendInstanceUpdate(instanceInspector.Key,instanceInspector.Serialize());
                     }
                     
-                    SendInstanceUpdate(instanceInspector.Serialize());
+                    SendInstanceUpdate(instanceInspector.Key,instanceInspector.Serialize());
                 }
             }
         }
 
-        private void SendInstanceUpdate(string result)
+        private void SendInstanceUpdate(string key, string result)
         {
             // We can't list all instances like with Blazor support which targets .netcoreapp 3.1 
-            var newId = _instanceIds++;
+            //var newId = _instanceIds++;
             
-            Runtime.SendBroadcast("-1 " + newId + " " + result, 70, 6);
+            Runtime.SendBroadcast("-1 " + key + " " + result, 70, 6);
         }
     }
 }
