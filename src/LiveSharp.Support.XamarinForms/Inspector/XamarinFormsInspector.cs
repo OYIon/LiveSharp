@@ -1,10 +1,7 @@
 ﻿using LiveSharp.Runtime;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using Xamarin.Forms;
 
 namespace LiveSharp.Support.XamarinForms
@@ -114,7 +111,7 @@ namespace LiveSharp.Support.XamarinForms
             // We can't list all instances like with Blazor support which targets .netcoreapp 3.1 
             //var newId = _instanceIds++;
             
-            Runtime.SendBroadcast("-1 " + key + " " + result, 70, 6);
+            Runtime.SendBroadcast(" " + key + " " + result, 70, 6);
         }
     }
 }

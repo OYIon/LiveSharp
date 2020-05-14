@@ -20,6 +20,7 @@ namespace LiveSharp
         public void Initialize(ILiveSharpRuntime runtime)
         {
             _runtime = runtime;
+            _runtime.Inspector = new XamarinFormsInspector();
         }
         
         public void HandleCall(object instance, string methodIdentifier, object[] args, Type[] argTypes)
