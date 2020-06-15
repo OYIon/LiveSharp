@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LiveSharp.Interfaces;
 
 namespace LiveSharp
 {
@@ -7,6 +8,6 @@ namespace LiveSharp
     {
         void Initialize(ILiveSharpRuntime runtime);
         void HandleCall(object instance, string methodIdentifier, object[] args, Type[] argTypes);
-        void HandleUpdate(Dictionary<string, IReadOnlyList<object>> updatedMethods);
+        void HandleUpdate(IReadOnlyList<IUpdatedMethodContext> updatedMethods);
     }
 }
