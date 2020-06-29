@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using LiveSharp.Interfaces;
 using LiveSharp.Support.XamarinForms;
 using Xamarin.Forms;
 
@@ -12,7 +13,7 @@ namespace LiveSharp
 {
     public class XamarinFormsUpdateHandler : ILiveSharpUpdateHandler
     {
-        private readonly WeakReference<object> _latestContentPage = new WeakReference<object>(null);
+        private readonly WeakReference<object> _latestView = new WeakReference<object>(null);
         private readonly ConditionalWeakTable<INotifyPropertyChanged, InstanceInfo> _inpcInfos = new ConditionalWeakTable<INotifyPropertyChanged, InstanceInfo>();
         private int _uniqueId;
         private ILiveSharpRuntime _runtime;
@@ -31,13 +32,13 @@ namespace LiveSharp
                     _inpcInfos.Add(inpc, new InstanceInfo(_uniqueId++, args, argTypes));
             }
 
-            if (instance is ContentPage && methodIdentifier.EndsWith(" Build "))
-                _latestContentPage.SetTarget(instance);
+            if (instance is View && methodIdentifier.EndsWith(" Build "))
+                _latestView.SetTarget(instance);
         }
 
-        public void HandleUpdate(Dictionary<string, IReadOnlyList<object>> updatedMethods)
+        public void HandleUpdate(IReadOnlyList<IUpdatedMethodContext> updatedMethods)
         {
-            var instances = updatedMethods.SelectMany(kvp => kvp.Value)
+            var instances = updatedMethods.SelectMany(method => method.Instances)
                                           .Where(i => i != null)
                                           .Distinct()
                                           .ToArray();
@@ -58,8 +59,8 @@ namespace LiveSharp
                     UpdateViewModels(updatedContexts);
 
                     if (!found) {
-                        if (_latestContentPage.TryGetTarget(out var contentPage))
-                            CallBuildMethod(contentPage);
+                        if (_latestView.TryGetTarget(out var view))
+                            CallBuildMethod(view);
                     }
                 } catch (TargetInvocationException e) {
                     var inner = e.InnerException;

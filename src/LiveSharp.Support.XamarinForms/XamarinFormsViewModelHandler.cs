@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using LiveSharp.Interfaces;
 using LiveSharp.Support.XamarinForms;
 using Xamarin.Forms;
 
@@ -41,9 +42,9 @@ namespace LiveSharp
             }
         }
 
-        public void HandleUpdate(Dictionary<string, IReadOnlyList<object>> updatedMethods)
+        public void HandleUpdate(IReadOnlyList<IUpdatedMethodContext> updatedMethods)
         {
-            var instances = updatedMethods.SelectMany(kvp => kvp.Value)
+            var instances = updatedMethods.SelectMany(method => method.Instances)
                 .Where(i => i != null)
                 .Distinct()
                 .ToArray();
