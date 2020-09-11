@@ -6,7 +6,6 @@ namespace LiveSharp
 {
     public interface ILiveSharpRuntime
     {
-        ILiveSharpConfig Config { get; }
         ILogger Logger { get; }
         ILiveSharpInspector Inspector { get; set; }
         
